@@ -590,14 +590,88 @@
     }
 
     .foot {
-      padding: 18px 5px 0;
+      margin-top: 18px;
+      padding: 24px 18px 20px;
       text-align: center;
-      font-size: .73rem;
-      color: #82756a
+      font-size: .76rem;
+      color: #e2eee6;
+      background: #14251d;
+      border: 1px solid #284b39;
+      border-radius: 20px
     }
 
     .foot strong {
-      color: #5a4a3d
+      color: #fff
+    }
+
+    .footer-stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      margin: 0 auto 20px;
+      padding: 11px 16px;
+      text-align: left;
+      background: #203e30;
+      border: 1px solid #42644f;
+      border-radius: 14px
+    }
+
+    .footer-stat-icon {
+      width: 31px;
+      height: 31px;
+      display: grid;
+      place-items: center;
+      color: #a7e7c5;
+      background: #2b513e;
+      border-radius: 10px
+    }
+
+    .footer-stat-icon svg {
+      width: 16px;
+      height: 16px
+    }
+
+    .footer-stat span:last-child {
+      display: flex;
+      flex-direction: column;
+      gap: 2px
+    }
+
+    .footer-stat strong {
+      color: #fff;
+      font-size: 1rem;
+      line-height: 1
+    }
+
+    .footer-stat small {
+      color: #b7d8c3;
+      font-size: .68rem
+    }
+
+    .footer-title {
+      display: block;
+      color: #fff;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.18rem;
+      margin-bottom: 5px
+    }
+
+    .footer-note {
+      max-width: 430px;
+      margin: 0 auto;
+      color: #c9ded0;
+      font-size: .75rem;
+      line-height: 1.55
+    }
+
+    .footer-credits {
+      margin: 17px auto 0;
+      padding-top: 14px;
+      max-width: 520px;
+      border-top: 1px solid #355342;
+      color: #a9c5b3;
+      font-size: .68rem;
+      line-height: 1.55
     }
 
     .loading {
@@ -936,18 +1010,12 @@
         <span class="footer-stat-icon" aria-hidden="true"><svg>
             <use href="#i-eye" />
           </svg></span>
-        <span><strong id="visitor-count">Counting…</strong><small id="visitor-count-label"> Total Visitors 
-          </small></span>
+        <span><strong id="visitor-count">Counting…</strong><small id="visitor-count-label">Total visitors</small></span>
       </div>
-      <strong><br>Pause. Preview. Verify.<br></strong>
-      <div class="smallprint">No real transaction or operating-system notification is created. Browser information can
-        be incomplete or masked by privacy settings.</div>
-      <div class="smallprint" style="margin-top:14px;color:#5a4a3d">
-        This awareness campaign was conceptualized collectively by
-        <strong>Pranay Parikh, Khanjan Vyas, and Bhavya Mehta</strong>,
-        and designed and developed by <strong>Pranay Parikh</strong>,
-        under the guidance of <strong>Dr. Hardik K. Molia, Institute Nodal Officer, Sanchar Mitras</strong>.
-        All necessary permissions for conducting this campaign were obtained from the Institute Nodal Officer.
+      <strong class="footer-title">Pause. Preview. Verify.</strong>
+      <div class="footer-note">No real transaction or operating-system notification was created. Your money is safe; the alert was a simulation.</div>
+      <div class="footer-credits">
+        Campus Diwali cyber-awareness campaign · Conceptualized by Pranay Parikh, Khanjan Vyas, and Bhavya Mehta · Designed and developed by Pranay Parikh · Under the guidance of Dr. Hardik K. Molia, Institute Nodal Officer, Sanchar Mitras.
       </div>
     </footer>
 
@@ -990,9 +1058,7 @@
         .catch(() => { $('ip').textContent = 'Unavailable in this preview'; $('ip').classList.remove('loading'); });
 
       const localVisitKey = 'campus-diwali-awareness-visits';
-      const showVisitCount = (value, localOnly = false) => {
-        const label = localOnly ? 'Visits on this device' : 'Anonymous campaign visits';
-        $('visitor-count-label').textContent = label;
+      const showVisitCount = (value) => {
         $('visitor-count').textContent = Number(value).toLocaleString('en-IN');
       };
       let localVisits = 1;
@@ -1002,7 +1068,7 @@
       } catch {
         // Privacy modes can disable local storage; the network counter still works.
       }
-      showVisitCount(localVisits, true);
+      showVisitCount(localVisits);
 
       let started = false;
       $('reveal-button').addEventListener('click', () => {
