@@ -19,7 +19,11 @@ The transaction alert is created inside the webpage only. The page does not requ
 4. Deploy. Vercel serves `index.html` and exposes `api/visitor.js` at `/api/visitor`.
 5. Test the flow on both Android and iPhone before printing QR posters.
 
-The page reports a best-effort campaign visit count from the Vercel function. It counts requests, not verified unique people, and serverless instances can restart, so it is an engagement estimate rather than an audit-grade metric. If the function is unavailable, the page falls back to a visit count stored only in that browser's local storage and labels it accordingly.
+The page reports a best-effort campaign visit count from private Vercel Blob records. It counts requests, not verified unique people, and should be treated as an engagement estimate rather than an audit-grade metric. If the function is unavailable, the page falls back to a visit count stored only in that browser's local storage and labels it accordingly.
+
+## Vercel Blob setup
+
+Connect a private Blob store to the Vercel project and enable the read-write token environment variable. The deployment must provide `BLOB_READ_WRITE_TOKEN`; the token is read by `api/visitor.js` through the Blob SDK and is never placed in the repository or browser code. Do not commit `.env` files or paste the token into source code.
 
 ## Run locally
 
@@ -35,7 +39,7 @@ Opening `index.html` directly as a file will not provide the IP endpoint.
 
 - Browser/display values are read locally in the visitor's browser.
 - `/api/visitor` returns the IP address supplied by the hosting request headers; it does not write it to an application database.
-- The campaign counter is held in serverless function memory and may reset when the platform creates a new instance; do not use it for security, billing, or identity decisions.
+- The campaign counter stores one private timestamp-only Blob object per request under `visits/`; it does not store the displayed IP address. Do not use it for security, billing, or identity decisions.
 - Hosting infrastructure may process or retain request metadata in platform logs. Review Vercel's current logging and privacy settings before the campaign.
 - Get college approval for posters and explain the campaign's purpose and data handling in line with institutional policy and applicable law.
 

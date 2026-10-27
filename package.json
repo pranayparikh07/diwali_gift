@@ -1,0 +1,24 @@
+{
+  "name": "diwali_gift",
+  "version": "1.0.0",
+  "description": "A responsive, mobile-first cybersecurity awareness page built with HTML, CSS, vanilla JavaScript, and a small Vercel serverless endpoint. No framework or build step is required.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pranayparikh07/diwali_gift.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/pranayparikh07/diwali_gift/issues"
+  },
+  "homepage": "https://github.com/pranayparikh07/diwali_gift#readme",
+  "dependencies": {
+    "@vercel/blob": "^2.4.0"
+  }
+}
