@@ -19,12 +19,10 @@ export default async function handler(req, res) {
   const ip = rawIp.length <= 64 ? rawIp : '';
 
   try {
-    await put(`visits/${Date.now()}-${randomUUID()}.json`, JSON.stringify({
-      visitedAt: new Date().toISOString(),
-    }), {
+    await put(`visits/${Date.now()}-${randomUUID()}`, '', {
       access: 'private',
       addRandomSuffix: false,
-      contentType: 'application/json',
+      contentType: 'application/octet-stream',
     });
 
     let visits = 0;

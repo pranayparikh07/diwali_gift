@@ -39,7 +39,7 @@ Opening `index.html` directly as a file will not provide the IP endpoint.
 
 - Browser/display values are read locally in the visitor's browser.
 - `/api/visitor` returns the IP address supplied by the hosting request headers; it does not write it to an application database.
-- The campaign counter stores one private timestamp-only Blob object per request under `visits/`; it does not store the displayed IP address. Do not use it for security, billing, or identity decisions.
+- The campaign counter stores one private empty Blob object per request under `visits/`; the unique pathname is the visit record, so no timestamp payload or displayed IP address is stored. Do not use it for security, billing, or identity decisions.
 - Hosting infrastructure may process or retain request metadata in platform logs. Review Vercel's current logging and privacy settings before the campaign.
 - Get college approval for posters and explain the campaign's purpose and data handling in line with institutional policy and applicable law.
 
