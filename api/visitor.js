@@ -19,7 +19,11 @@ export default async function handler(req, res) {
   const ip = rawIp.length <= 64 ? rawIp : '';
 
   try {
-    await put(`visits/${Date.now()}-${randomUUID()}`, '', {
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      throw new Error('BLOB_READ_WRITE_TOKEN is not configured');
+    }
+
+    await put(`visits/${Date.now()}-${randomUUID()}`, new Uint8Array(0), {
       access: 'private',
       addRandomSuffix: false,
       contentType: 'application/octet-stream',

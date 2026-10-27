@@ -25,6 +25,8 @@ The page reports a best-effort campaign visit count from private Vercel Blob rec
 
 Connect a private Blob store to the Vercel project and enable the read-write token environment variable. The deployment must provide `BLOB_READ_WRITE_TOKEN`; the token is read by `api/visitor.js` through the Blob SDK and is never placed in the repository or browser code. Do not commit `.env` files or paste the token into source code.
 
+If no Blob appears after a visit, check the deployed function directly at `/api/visitor`, then inspect the Vercel function logs. A successful response includes `visits`; a `503` usually means the Blob store is not connected to the deployment environment or the deployment predates the storage connection. Redeploy after adding or changing the Blob environment variable.
+
 ## Run locally
 
 Install the Vercel CLI, then run:
