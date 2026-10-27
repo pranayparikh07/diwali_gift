@@ -1,5 +1,29 @@
-import { list, put } from '@vercel/blob';
-import { randomUUID } from 'node:crypto';
+import { cert, getApps, initializeApp } from 'firebase-admin/app';
+import { getDatabase } from 'firebase-admin/database';
+
+function getFirebaseDatabase() {
+  const required = [
+    'FIREBASE_PROJECT_ID',
+    'FIREBASE_CLIENT_EMAIL',
+    'FIREBASE_PRIVATE_KEY',
+    'FIREBASE_DATABASE_URL',
+  ];
+  const missing = required.filter((name) => !process.env[name]);
+  if (missing.length > 0) {
+    throw new Error(`Missing Firebase environment variables: ${missing.join(', ')}`);
+  }
+
+  const app = getApps()[0] || initializeApp({
+    credential: cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    }),
+    databaseURL: process.env.FIREBASE_DATABASE_URL,
+  });
+
+  return getDatabase(app);
+}
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store, max-age=0');
@@ -19,23 +43,11 @@ export default async function handler(req, res) {
   const ip = rawIp.length <= 64 ? rawIp : '';
 
   try {
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      throw new Error('BLOB_READ_WRITE_TOKEN is not configured');
-    }
-
-    await put(`visits/${Date.now()}-${randomUUID()}`, new Uint8Array(0), {
-      access: 'private',
-      addRandomSuffix: false,
-      contentType: 'application/octet-stream',
+    const visitsRef = getFirebaseDatabase().ref('campaign/visits');
+    const result = await visitsRef.transaction((currentValue) => {
+      return (Number(currentValue) || 0) + 1;
     });
-
-    let visits = 0;
-    let cursor;
-    do {
-      const page = await list({ prefix: 'visits/', cursor, limit: 1000 });
-      visits += page.blobs.length;
-      cursor = page.hasMore ? page.cursor : undefined;
-    } while (cursor);
+    const visits = result.snapshot.val();
 
     return res.status(200).json({ ip: ip || null, visits });
   } catch (error) {

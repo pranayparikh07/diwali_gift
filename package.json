@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/pranayparikh07/diwali_gift/issues"
   },
-  "homepage": "https://github.com/pranayparikh07/diwali_gift#readme"
+  "homepage": "https://github.com/pranayparikh07/diwali_gift#readme",
+  "dependencies": {
+    "firebase-admin": "^13.6.0"
+  }
 }

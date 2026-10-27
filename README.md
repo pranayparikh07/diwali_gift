@@ -19,13 +19,13 @@ The transaction alert is created inside the webpage only. The page does not requ
 4. Deploy. Vercel serves `index.html` and exposes `api/visitor.js` at `/api/visitor`.
 5. Test the flow on both Android and iPhone before printing QR posters.
 
-The page reports a best-effort campaign visit count from private Vercel Blob records. It counts requests, not verified unique people, and should be treated as an engagement estimate rather than an audit-grade metric. If the function is unavailable, the page falls back to a visit count stored only in that browser's local storage and labels it accordingly.
+The page reports a best-effort campaign visit count from Firebase Realtime Database at `campaign/visits`. It counts requests, not verified unique people, and should be treated as an engagement estimate rather than an audit-grade metric. If the function is unavailable, the page falls back to a visit count stored only in that browser's local storage and labels it accordingly.
 
-## Vercel Blob setup
+## Firebase setup
 
-Connect a private Blob store to the Vercel project and enable the read-write token environment variable. The deployment must provide `BLOB_READ_WRITE_TOKEN`; the token is read by `api/visitor.js` through the Blob SDK and is never placed in the repository or browser code. Do not commit `.env` files or paste the token into source code.
+Create a Realtime Database in Firebase and keep its rules locked. Configure these Vercel environment variables for the deployment: `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`, and `FIREBASE_DATABASE_URL`. The service-account key is read only by `api/visitor.js` through the Firebase Admin SDK and is never placed in the repository or browser code. Do not commit `.env` files or paste the key into source code.
 
-If no Blob appears after a visit, check the deployed function directly at `/api/visitor`, then inspect the Vercel function logs. A successful response includes `visits`; a `503` usually means the Blob store is not connected to the deployment environment or the deployment predates the storage connection. Redeploy after adding or changing the Blob environment variable.
+If no value appears after a visit, check the deployed function directly at `/api/visitor`, then inspect the Vercel function logs. A successful response includes `visits`; a `503` usually means one of the Firebase environment variables is missing or incorrect. Redeploy after adding or changing environment variables.
 
 ## Run locally
 
@@ -41,7 +41,7 @@ Opening `index.html` directly as a file will not provide the IP endpoint.
 
 - Browser/display values are read locally in the visitor's browser.
 - `/api/visitor` returns the IP address supplied by the hosting request headers; it does not write it to an application database.
-- The campaign counter stores one private empty Blob object per request under `visits/`; the unique pathname is the visit record, so no timestamp payload or displayed IP address is stored. Do not use it for security, billing, or identity decisions.
+- The campaign counter atomically increments one Firebase value at `campaign/visits`; it does not store the displayed IP address. Do not use it for security, billing, or identity decisions.
 - Hosting infrastructure may process or retain request metadata in platform logs. Review Vercel's current logging and privacy settings before the campaign.
 - Get college approval for posters and explain the campaign's purpose and data handling in line with institutional policy and applicable law.
 
