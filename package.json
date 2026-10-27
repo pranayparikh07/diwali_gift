@@ -17,8 +17,5 @@
   "bugs": {
     "url": "https://github.com/pranayparikh07/diwali_gift/issues"
   },
-  "homepage": "https://github.com/pranayparikh07/diwali_gift#readme",
-  "dependencies": {
-    "@vercel/blob": "^2.4.0"
-  }
+  "homepage": "https://github.com/pranayparikh07/diwali_gift#readme"
 }
