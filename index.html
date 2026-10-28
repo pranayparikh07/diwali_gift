@@ -372,29 +372,44 @@
 
     .transaction {
       position: fixed;
-      z-index: 10;
-      bottom: max(14px, env(safe-area-inset-bottom));
-      left: 10px;
-      right: 10px;
-      margin: 0 auto;
-      width: min(440px, calc(100% - 20px));
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 14px 15px 13px;
-      background: #f1f3f4;
-      border: 1px solid #dfe2e5;
-      border-radius: 26px;
-      box-shadow: 0 5px 18px #0002;
-      transform: translateY(calc(100% + 24px));
+      z-index: 20;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(25, 7, 12, .82);
       opacity: 0;
+      visibility: hidden;
       pointer-events: none;
-      transition: transform .38s cubic-bezier(.2, .8, .2, 1), opacity .3s
+      transition: opacity .25s, visibility .25s
     }
 
     .transaction.show {
-      transform: translateY(0);
-      opacity: 1
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto
+    }
+
+    .warning-card {
+      position: relative;
+      width: min(460px, 100%);
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      padding: 22px 20px 20px;
+      background: #fff7e8;
+      border: 2px solid #d73535;
+      border-radius: 18px;
+      box-shadow: 0 0 0 5px #d7353526, 0 20px 70px #0008;
+      transform: scale(.88);
+      opacity: 0;
+      transition: transform .35s cubic-bezier(.2, .9, .3, 1), opacity .25s
+    }
+
+    .transaction.show .warning-card {
+      transform: scale(1);
+      opacity: 1;
+      animation: warning-pulse .7s ease-out both
     }
 
     .bank-icon {
@@ -402,8 +417,8 @@
       height: 42px;
       flex: 0 0 42px;
       border-radius: 50%;
-      background: #d8e6dc;
-      color: #185c37;
+      background: #f8dca0;
+      color: #7e191f;
       display: grid;
       place-items: center
     }
@@ -423,7 +438,7 @@
       align-items: center;
       gap: 6px;
       font-size: .72rem;
-      color: #454b50;
+      color: #7e191f;
       margin: 0 0 4px
     }
 
@@ -431,27 +446,27 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #287b4b;
+      background: #c18b35;
       display: inline-block
     }
 
     .toast-title {
       font-size: .87rem;
       font-weight: 750;
-      color: #202124;
+      color: #5a1c1b;
       letter-spacing: -.01em
     }
 
     .toast-message {
       font-size: .81rem;
       line-height: 1.4;
-      color: #303134;
+      color: #5a4034;
       margin-top: 3px
     }
 
     .toast-time {
       font-size: .68rem;
-      color: #5f6368;
+      color: #806b55;
       margin-top: 5px
     }
 
@@ -463,6 +478,12 @@
       border: 0;
       padding: 0 2px;
       cursor: pointer
+    }
+
+    @keyframes warning-pulse {
+      0% { transform: scale(.88); }
+      65% { transform: scale(1.03); }
+      100% { transform: scale(1); }
     }
 
     .reveal {
@@ -935,19 +956,20 @@
         provider may process request metadata in its infrastructure logs.</div>
     </section>
 
-    <aside class="transaction" id="transaction-toast" role="status" aria-live="polite"
-      aria-label="Simulated transaction notification">
-      <div class="bank-icon" aria-hidden="true"><svg>
-          <use href="#i-credit" />
-        </svg></div>
-      <div class="toast-copy">
-        <div class="toast-app-row"><span class="toast-app-dot"></span> Account services <span
-            aria-hidden="true">·</span> now</div>
-        <div class="toast-title">Account debit alert</div>
-        <div class="toast-message" id="transaction-message">₹00,000 debited from your account.</div>
-        <div class="toast-time">Tap to view details</div>
+    <aside class="transaction" id="transaction-toast" role="alert" aria-live="assertive"
+      aria-label="QR code safety warning">
+      <div class="warning-card">
+        <div class="bank-icon" aria-hidden="true"><svg>
+            <use href="#i-alert" />
+          </svg></div>
+        <div class="toast-copy">
+          <div class="toast-app-row"><span class="toast-app-dot"></span> Security warning</div>
+          <div class="toast-title">STOP — you may be bugged.</div>
+          <div class="toast-message">You scanned an unknown QR code. This could expose you to fake payments, stolen passwords, harmful downloads, or a look-alike website.</div>
+          <div class="toast-time">Awareness simulation · do not enter any details</div>
+        </div>
+        <button class="toast-close" type="button" aria-label="Dismiss QR safety warning" id="toast-close">×</button>
       </div>
-      <button class="toast-close" type="button" aria-label="Dismiss simulated notification" id="toast-close">×</button>
     </aside>
 
     <section class="reveal hidden" id="lesson-section" aria-labelledby="lesson-title">
@@ -957,15 +979,15 @@
           </svg></div>
         <div class="reveal-tag">Cybersecurity awareness test</div>
       </div>
-      <h2 id="lesson-title">That alert was fake. Your money is safe.</h2>
-      <p>The debit message was a <strong>simulated notification displayed only inside this webpage.</strong> No payment
-        was made, no bank was contacted, and no money was deducted. The amount was randomly generated to demonstrate how
-        a convincing alert can create panic.</p>
+      <h2 id="lesson-title">Pause before you scan.</h2>
+      <p>That warning was part of a <strong>simulated awareness experience displayed only inside this webpage.</strong>
+        No account was accessed and no device was compromised. The goal is to show how quickly an unfamiliar QR code can
+        lead to unsafe decisions.</p>
       <div class="truth"><svg aria-hidden="true">
           <use href="#i-check" />
         </svg>
-        <div><strong>What actually happened?</strong><br />You opened a webpage. It read a few browser-visible details
-          and displayed a made-up transaction alert. This alone does not mean your phone was hacked.</div>
+        <div><strong>What actually happened?</strong><br />You opened a webpage. It displayed a warning to demonstrate
+          why an unexpected QR code should be checked before it is trusted.</div>
       </div>
       <div class="risk-grid">
         <div class="risk">
@@ -1013,7 +1035,7 @@
         <span><strong id="visitor-count">Counting…</strong><small id="visitor-count-label">Total visitors</small></span>
       </div>
       <strong class="footer-title">Pause. Preview. Verify.</strong>
-      <div class="footer-note">No real transaction or operating-system notification was created. Your money is safe; the alert was a simulation.</div>
+      <div class="footer-note">No real transaction or operating-system notification was created. This page is a QR safety awareness simulation.</div>
       <div class="footer-credits">
         Campus Diwali cyber-awareness campaign · Conceptualized by Pranay Parikh, Khanjan Vyas, and Bhavya Mehta · Designed and developed by Pranay Parikh · Under the guidance of Dr. Hardik K. Molia, Institute Nodal Officer, Sanchar Mitras.
       </div>
@@ -1080,9 +1102,7 @@
           $('gift-screen').classList.add('hidden');
           $('footprint-section').classList.remove('hidden');
           window.scrollTo({ top: 0, behavior: 'smooth' });
-          const amount = Math.floor(10000 + Math.random() * 90000).toLocaleString('en-IN');
-          $('transaction-message').textContent = `₹${amount} debited from your account.`;
-          window.setTimeout(() => $('transaction-toast').classList.add('show'), 900);
+          window.setTimeout(() => $('transaction-toast').classList.add('show'), 150);
           window.setTimeout(() => {
             $('transaction-toast').classList.remove('show');
             $('lesson-section').classList.remove('hidden');
